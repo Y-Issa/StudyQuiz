@@ -58,29 +58,42 @@ function AccordionItem({
   onOpen,
 }) {
   const isOpen = num === curOpen;
-  function handleToggle() {
+  const [showAnswers, setShowAnswers] = useState(false);
+
+  const handleToggle = () => {
     onOpen(isOpen ? null : num);
-  }
+    setShowAnswers(false);
+  };
+
+  const handleShowAnswers = () => {
+    setShowAnswers((prev) => !prev);
+  };
 
   return (
-    <div className={`item ${isOpen ? "open" : ""}`} onClick={handleToggle}>
-      <p className="number">{num < 9 ? `0${num + 1} ` : num + 1}</p>
-      <p className="title">{question}</p>
-      <p className="icon">{isOpen ? "-" : "+"}</p>
+    <div className={`item ${isOpen ? "open" : ""}`}>
+      <p className="number" onClick={handleToggle}>
+        {num < 9 ? `0${num + 1} ` : num + 1}
+      </p>
+      <p className="title" onClick={handleToggle}>
+        {question}
+      </p>
+      <p className="icon" onClick={handleToggle}>
+        {isOpen ? "-" : "+"}
+      </p>
       {isOpen && (
         <div className="content-box">
-          {Object.entries(answers).map(
-            ([key, value]) =>
-              value && (
-                <li key={key}>
-                  {key === correctAnswers[0].slice(0, 8) ? (
-                    <strong>{value}</strong>
-                  ) : (
-                    value
-                  )}
-                </li>
-              )
-          )}
+          {Object.entries(answers).map(([key, value]) => (
+            <li key={key} onClick={handleToggle}>
+              {key === correctAnswers[0].slice(0, 8) ? (
+                <p className={showAnswers ? "corr" : ""}>{value}</p>
+              ) : (
+                <p>{value}</p>
+              )}
+            </li>
+          ))}
+          <button onClick={handleShowAnswers}>
+            {showAnswers ? "Hide Answer" : "Show Answer"}
+          </button>
         </div>
       )}
     </div>
